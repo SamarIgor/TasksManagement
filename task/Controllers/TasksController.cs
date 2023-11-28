@@ -27,7 +27,7 @@ namespace task.Controllers
         // GET: Tasks
         public async Task<IActionResult> Index()
         {
-            var taskContext = _context.Tasks.Include(t => t.Category).Include(t => t.Priority);
+            var taskContext = _context.Tasks.Include(t => t.Category).Include(t => t.Priority).Include(t => t.TaskFor).Include(t => t.Owner);
             return View(await taskContext.ToListAsync());
         }
 
@@ -42,6 +42,8 @@ namespace task.Controllers
             var tasks = await _context.Tasks
                 .Include(t => t.Category)
                 .Include(t => t.Priority)
+                .Include(t => t.TaskFor)
+                .Include(t => t.Owner)
                 .FirstOrDefaultAsync(m => m.TasksId == id);
                 
             if (tasks == null)
@@ -57,6 +59,7 @@ namespace task.Controllers
         {
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Name");
             ViewData["PriorityId"] = new SelectList(_context.Priorities, "PriorityId", "Name");
+            ViewData["TaskForId"] = new SelectList(_context.Users, "Id", "UserName");
             return View();
         }
 
@@ -66,7 +69,7 @@ namespace task.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         //[Authorize(Roles ="Admin")]
-        public async Task<IActionResult> Create([Bind("TasksId,Title,Description,CategoryId,PriorityId")] Tasks tasks)
+        public async Task<IActionResult> Create([Bind("TasksId,Title,Description,CategoryId,PriorityId,TaskForId")] Tasks tasks)
         {
             var currentUser = await _usermanager.GetUserAsync(User);
             
@@ -75,6 +78,9 @@ namespace task.Controllers
                 tasks.DateCreated = DateTime.Now;
                 tasks.DateEdited = DateTime.Now;
                 tasks.Owner = currentUser;
+                tasks.OwnerId = currentUser.Id;
+
+                tasks.TaskFor = await _usermanager.FindByIdAsync(tasks.TaskForId);
 
                 _context.Add(tasks);
                 await _context.SaveChangesAsync();
@@ -82,6 +88,7 @@ namespace task.Controllers
             }
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Name", tasks.CategoryId);
             ViewData["PriorityId"] = new SelectList(_context.Priorities, "PriorityId", "Name", tasks.PriorityId);
+            ViewData["TaskForId"] = new SelectList(_context.Users, "Id", "UserName",tasks.TaskForId);
             return View(tasks);
         }
 
@@ -100,6 +107,7 @@ namespace task.Controllers
             }
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Name", tasks.CategoryId);
             ViewData["PriorityId"] = new SelectList(_context.Priorities, "PriorityId", "Name", tasks.PriorityId);
+            ViewData["TaskForId"] = new SelectList(_context.Users, "Id", "UserName",tasks.TaskForId);
             return View(tasks);
         }
 
@@ -109,7 +117,7 @@ namespace task.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         //[Authorize(Roles ="Admin")]
-        public async Task<IActionResult> Edit(int id, [Bind("TasksId,Title,Description,CategoryId,PriorityId")] Tasks tasks)
+        public async Task<IActionResult> Edit(int id, [Bind("TasksId,Title,Description,CategoryId,PriorityId,TaskForId")] Tasks tasks)
         {
             if (id != tasks.TasksId)
             {
@@ -129,6 +137,7 @@ namespace task.Controllers
             }
 
             // Update only the necessary properties
+            originalTasks.TaskForId = tasks.TaskForId;
             originalTasks.Title = tasks.Title;
             originalTasks.Description = tasks.Description;
             originalTasks.CategoryId = tasks.CategoryId;
@@ -155,6 +164,7 @@ namespace task.Controllers
             }
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId", tasks.CategoryId);
             ViewData["PriorityId"] = new SelectList(_context.Priorities, "PriorityId", "PriorityId", tasks.PriorityId);
+            ViewData["TaskForId"] = new SelectList(_context.Users, "Id", "UserName",tasks.TaskForId);
             return View(tasks);
         }
 
@@ -168,6 +178,9 @@ namespace task.Controllers
 
             var tasks = await _context.Tasks
                 .Include(t => t.Category)
+                .Include(t => t.Priority)
+                .Include(t => t.TaskFor)
+                .Include(t => t.Owner)
                 .FirstOrDefaultAsync(m => m.TasksId == id);
             if (tasks == null)
             {

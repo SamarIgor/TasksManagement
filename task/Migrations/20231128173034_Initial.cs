@@ -194,6 +194,7 @@ namespace task.Migrations
                     CategoryId = table.Column<int>(type: "int", nullable: true),
                     PriorityId = table.Column<int>(type: "int", nullable: true),
                     OwnerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    TaskForId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DateEdited = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -203,6 +204,11 @@ namespace task.Migrations
                     table.ForeignKey(
                         name: "FK_Tasks_AspNetUsers_OwnerId",
                         column: x => x.OwnerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Tasks_AspNetUsers_TaskForId",
+                        column: x => x.TaskForId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
@@ -225,7 +231,6 @@ namespace task.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TasksId = table.Column<int>(type: "int", nullable: true),
                     Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CommentById = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     OwnerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DateEdited = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -233,11 +238,6 @@ namespace task.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Comment", x => x.CommentId);
-                    table.ForeignKey(
-                        name: "FK_Comment_AspNetUsers_CommentById",
-                        column: x => x.CommentById,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Comment_AspNetUsers_OwnerId",
                         column: x => x.OwnerId,
@@ -290,11 +290,6 @@ namespace task.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comment_CommentById",
-                table: "Comment",
-                column: "CommentById");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Comment_OwnerId",
                 table: "Comment",
                 column: "OwnerId");
@@ -318,6 +313,11 @@ namespace task.Migrations
                 name: "IX_Tasks_PriorityId",
                 table: "Tasks",
                 column: "PriorityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tasks_TaskForId",
+                table: "Tasks",
+                column: "TaskForId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

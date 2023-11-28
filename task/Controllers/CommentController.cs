@@ -74,6 +74,7 @@ namespace task.Controllers
                 comment.DateCreated = DateTime.Now;
                 comment.DateEdited = DateTime.Now;
                 comment.Owner = currentUser;
+                comment.OwnerId = currentUser.Id;
 
                 _context.Add(comment);
                 await _context.SaveChangesAsync();

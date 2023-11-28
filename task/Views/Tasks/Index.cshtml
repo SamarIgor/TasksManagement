@@ -25,10 +25,10 @@
                 @Html.DisplayNameFor(model => model.Priority)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DateCreated)
+                @Html.DisplayNameFor(model => model.TaskFor)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DateEdited)
+                @Html.DisplayNameFor(model => model.Owner)
             </th>
             <th></th>
         </tr>
@@ -43,16 +43,16 @@
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Category.CategoryId)
+                @Html.DisplayFor(modelItem => item.Category.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Priority.PriorityId)
+                @Html.DisplayFor(modelItem => item.Priority.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DateCreated)
+                @Html.DisplayFor(modelItem => item.TaskFor.UserName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DateEdited)
+                @Html.DisplayFor(modelItem => item.Owner.UserName)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.TasksId">Edit</a> |

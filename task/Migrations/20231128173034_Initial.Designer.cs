@@ -12,7 +12,7 @@ using task.Data;
 namespace task.Migrations
 {
     [DbContext(typeof(TaskContext))]
-    [Migration("20231123173334_Initial")]
+    [Migration("20231128173034_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -260,9 +260,6 @@ namespace task.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CommentId"), 1L, 1);
 
-                    b.Property<string>("CommentById")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<DateTime?>("DateCreated")
                         .HasColumnType("datetime2");
 
@@ -280,8 +277,6 @@ namespace task.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CommentId");
-
-                    b.HasIndex("CommentById");
 
                     b.HasIndex("OwnerId");
 
@@ -334,6 +329,9 @@ namespace task.Migrations
                     b.Property<int?>("PriorityId")
                         .HasColumnType("int");
 
+                    b.Property<string>("TaskForId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -345,6 +343,8 @@ namespace task.Migrations
                     b.HasIndex("OwnerId");
 
                     b.HasIndex("PriorityId");
+
+                    b.HasIndex("TaskForId");
 
                     b.ToTable("Tasks", (string)null);
                 });
@@ -402,10 +402,6 @@ namespace task.Migrations
 
             modelBuilder.Entity("task.Models.Comment", b =>
                 {
-                    b.HasOne("task.Models.AccountUser", "CommentBy")
-                        .WithMany()
-                        .HasForeignKey("CommentById");
-
                     b.HasOne("task.Models.AccountUser", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerId");
@@ -413,8 +409,6 @@ namespace task.Migrations
                     b.HasOne("task.Models.Tasks", "Tasks")
                         .WithMany("Comments")
                         .HasForeignKey("TasksId");
-
-                    b.Navigation("CommentBy");
 
                     b.Navigation("Owner");
 
@@ -435,11 +429,17 @@ namespace task.Migrations
                         .WithMany()
                         .HasForeignKey("PriorityId");
 
+                    b.HasOne("task.Models.AccountUser", "TaskFor")
+                        .WithMany()
+                        .HasForeignKey("TaskForId");
+
                     b.Navigation("Category");
 
                     b.Navigation("Owner");
 
                     b.Navigation("Priority");
+
+                    b.Navigation("TaskFor");
                 });
 
             modelBuilder.Entity("task.Models.Tasks", b =>
