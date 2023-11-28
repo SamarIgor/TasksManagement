@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -117,7 +118,20 @@ namespace task.Controllers
             {
                 try
                 {
-                    _context.Update(comment);
+                    var originalComment = await _context.Comments.FindAsync(id);
+
+                    if (originalComment == null)
+                    {
+                        return NotFound();
+                    }
+
+                    // Update only the necessary properties
+                    originalComment.Text = comment.Text;
+
+                    // Update the DateEdited property
+                    originalComment.DateEdited = DateTime.Now;
+
+                    _context.Update(originalComment);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

@@ -11,10 +11,10 @@ namespace task.Data
         public static void Initialize(TaskContext context)
         {
             context.Database.EnsureCreated();
-            if (context.Tasks.Any())
-            {
-                return;   // DB has been seeded
-            }
+            // if (context.Tasks.Any())
+            // {
+            //     return;   // DB has been seeded
+            // }
 
             var category = new Category[]{
                 new Category{CategoryId=1, Name="Easy"},

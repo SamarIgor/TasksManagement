@@ -120,8 +120,25 @@ namespace task.Controllers
             {
                 try
                 {
-                    _context.Update(tasks);
-                    await _context.SaveChangesAsync();
+                    // Retrieve the original entity from the database
+            var originalTasks = await _context.Tasks.FindAsync(id);
+
+            if (originalTasks == null)
+            {
+                return NotFound();
+            }
+
+            // Update only the necessary properties
+            originalTasks.Title = tasks.Title;
+            originalTasks.Description = tasks.Description;
+            originalTasks.CategoryId = tasks.CategoryId;
+            originalTasks.PriorityId = tasks.PriorityId;
+            
+            // Update the DateEdited property
+            originalTasks.DateEdited = DateTime.Now;
+
+            _context.Update(originalTasks);
+            await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -166,8 +183,21 @@ namespace task.Controllers
         //[Authorize(Roles ="Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var tasks = await _context.Tasks.FindAsync(id);
-            _context.Tasks.Remove(tasks);
+            var tasks = await _context.Tasks
+        .Include(t => t.Comments) // Include the Comments navigation property
+        .FirstOrDefaultAsync(t => t.TasksId == id);
+
+    if (tasks == null)
+    {
+        return NotFound();
+    }
+
+    // Delete related comments
+    _context.Comments.RemoveRange(tasks.Comments);
+
+    // Delete the Tasks record
+    _context.Tasks.Remove(tasks);
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
