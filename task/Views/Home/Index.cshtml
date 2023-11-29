@@ -1,7 +1,49 @@
-﻿@{
+﻿@model IEnumerable<task.Models.Tasks>
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome to Task Management Application</h1>
+</div>
+
+<div class="container mt-4">
+    <h2>Your Tasks</h2>
+     @if (Model.Any())
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Title)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Description)
+                    </th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var task in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => task.Title)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => task.Description)
+                        </td>
+                        <td>
+                            <a asp-controller="Tasks" asp-action="Details" asp-route-id="@task.TasksId" class="btn btn-info btn-sm">Details</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No tasks available.</p>
+    }
 </div>
