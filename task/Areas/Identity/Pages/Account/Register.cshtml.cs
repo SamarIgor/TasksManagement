@@ -173,7 +173,15 @@ namespace task.Areas.Identity.Pages.Account
         {
             try
             {
-                return Activator.CreateInstance<AccountUser>();
+                var user = new AccountUser{
+                    UserName = Input.UserName,
+                    Email = Input.Email,
+                    FirstName = Input.FirstName,
+                    LastName = Input.LastName,
+                    City = Input.City,
+                };
+
+                return user;
             }
             catch
             {
