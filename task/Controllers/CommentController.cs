@@ -94,7 +94,7 @@ namespace task.Controllers
 
                 _context.Add(comment);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", new { id = comment.TasksId });
             }
             ViewData["TasksId"] = new SelectList(_context.Tasks, "TasksId", "TasksId", comment.TasksId);
             return View(comment);
@@ -162,7 +162,7 @@ namespace task.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", new { id = comment.TasksId });
             }
             ViewData["TasksId"] = new SelectList(_context.Tasks, "TasksId", "TasksId", comment.TasksId);
             return View(comment);
@@ -196,7 +196,7 @@ namespace task.Controllers
             var comment = await _context.Comments.FindAsync(id);
             _context.Comments.Remove(comment);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", new { id = comment.TasksId });
         }
 
         private bool CommentExists(int id)
