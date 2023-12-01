@@ -27,7 +27,11 @@ namespace task.Controllers
         // GET: Tasks
         public async Task<IActionResult> Index()
         {
-            var taskContext = _context.Tasks.Include(t => t.Category).Include(t => t.Priority).Include(t => t.TaskFor).Include(t => t.Owner);
+            var taskContext = _context.Tasks.Include(t => t.Category)
+            .Include(t => t.Priority)
+            .Include(t => t.TaskFor)
+            .Include(t => t.Owner)
+            .Include(t => t.Comments);
             return View(await taskContext.ToListAsync());
         }
 
@@ -44,6 +48,7 @@ namespace task.Controllers
                 .Include(t => t.Priority)
                 .Include(t => t.TaskFor)
                 .Include(t => t.Owner)
+                .Include(t => t.Comments)
                 .FirstOrDefaultAsync(m => m.TasksId == id);
                 
             if (tasks == null)

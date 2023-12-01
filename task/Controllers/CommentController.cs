@@ -26,10 +26,26 @@ namespace task.Controllers
         }
 
         // GET: Comment
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? id)
         {
-            var taskContext = _context.Comments.Include(c => c.Tasks);
-            return View(await taskContext.ToListAsync());
+            if (id == null)
+    {
+        return NotFound();
+    }
+
+    // Retrieve the task along with its comments
+    var taskWithComments = await _context.Tasks
+        .Include(t => t.Comments)
+        .ThenInclude(c => c.Owner)
+        .FirstOrDefaultAsync(m => m.TasksId == id);
+
+    if (taskWithComments == null)
+    {
+        return NotFound();
+    }
+
+    // Pass the task with comments to the view
+    return View(taskWithComments);
         }
 
         // GET: Comment/Details/5

@@ -38,8 +38,14 @@ app.MapRazorPages();
 app.UseAuthorization();
 
 app.MapControllerRoute(
+    name: "comment",
+    pattern: "Comment/{action}/{id?}",
+    defaults: new { controller = "Comment", action = "Index" });
+    
+app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}"
+    );
 
 app.Run();    
               

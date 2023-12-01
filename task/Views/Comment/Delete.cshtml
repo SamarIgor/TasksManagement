@@ -40,6 +40,6 @@
     <form asp-action="Delete">
         <input type="hidden" asp-for="CommentId" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        <a asp-action="Details" asp-route-id="@Model.CommentId" class="btn btn-secondary">Details</a>
     </form>
 </div>

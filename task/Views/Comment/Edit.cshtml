@@ -24,7 +24,7 @@
                 <span asp-validation-for="Text" class="text-danger"></span>
             </div>
                 <input type="submit" value="Save" class="btn btn-primary" /> | 
-                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                <a asp-action="Details" asp-route-id="@Model.CommentId" class="btn btn-secondary">Details</a>
         </form>
     </div>
 </div>
