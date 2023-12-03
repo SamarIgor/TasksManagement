@@ -4,12 +4,12 @@ using Microsoft.AspNetCore.Identity;
 using task.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("Tasks");
+var connectionString = builder.Configuration.GetConnectionString("AzureContext");
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<TaskContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Tasks")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AzureContext")));
 
 //builder.Services.AddDefaultIdentity<AccountUser>(options => options.SignIn.RequireConfirmedAccount = false)
  //   .AddRoles<IdentityRole>()
