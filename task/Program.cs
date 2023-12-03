@@ -6,6 +6,8 @@ using task.Models;
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("AzureContext");
 
+builder.Services.AddSwaggerGen();
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<TaskContext>(options =>
@@ -31,7 +33,10 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseSwagger();
+app.UseSwaggerUI(c => {
+    c.SwaggerEndpoint( "/api/swagger.json", "My API");
+});
 app.UseRouting();
 app.UseAuthentication();
 app.MapRazorPages();
