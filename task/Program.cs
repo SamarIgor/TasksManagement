@@ -35,7 +35,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSwagger();
 app.UseSwaggerUI(c => {
-    c.SwaggerEndpoint( "/api/swagger.json", "My API");
+    c.SwaggerEndpoint( "/swagger/v1/swagger.json", "My API");
 });
 app.UseRouting();
 app.UseAuthentication();
