@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -25,10 +27,30 @@ namespace task.Controllers_Api
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Comment>>> GetComments()
         {
-            return await _context.Comments
+            var comments = await _context.Comments
             .Include(c => c.Owner)
             .Include(c => c.Tasks)
             .ToListAsync();
+
+            var commentDtos = comments.Select(c => new
+            {       
+                CommentId = c.CommentId,
+                TasksId = c.TasksId,
+                Text = c.Text,
+                OwnerUsername = c.Owner?.UserName,
+                DateCreated = c.DateCreated,
+                DateEdited = c.DateEdited
+            });
+
+            var jsonOptions = new JsonSerializerOptions
+            {
+                ReferenceHandler = ReferenceHandler.Preserve,
+                MaxDepth = 64, 
+            };
+
+            var serializedComments = JsonSerializer.Serialize(commentDtos, jsonOptions);
+
+            return Content(serializedComments, "application/json");
         }
 
         // GET: api/CommentsApi/5
@@ -45,7 +67,25 @@ namespace task.Controllers_Api
                 return NotFound();
             }
 
-            return comment;
+            var commentDto = new
+            {
+                CommentId = comment.CommentId,
+                TasksId = comment.TasksId,
+                Text = comment.Text,
+                OwnerUsername = comment.Owner?.UserName,
+                DateCreated = comment.DateCreated,
+                DateEdited = comment.DateEdited
+            };
+
+            var jsonOptions = new JsonSerializerOptions
+            {
+                ReferenceHandler = ReferenceHandler.Preserve,
+                MaxDepth = 64, 
+            };
+
+            var serializedComment = JsonSerializer.Serialize(commentDto, jsonOptions);
+
+            return Content(serializedComment, "application/json");
         }
 
         // PUT: api/CommentsApi/5
