@@ -25,14 +25,26 @@ namespace task.Controllers_Api
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Tasks>>> GetTasks()
         {
-            return await _context.Tasks.ToListAsync();
+            return await _context.Tasks
+            .Include(task => task.Category)
+            .Include(task => task.Priority)
+            .Include(task => task.Comments)
+            .Include(task => task.Owner)
+            .Include(task => task.TaskFor)
+            .ToListAsync();
         }
 
         // GET: api/TasksApi/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Tasks>> GetTasks(int id)
         {
-            var tasks = await _context.Tasks.FindAsync(id);
+            var tasks = await _context.Tasks
+            .Include(task => task.Category)
+            .Include(task => task.Priority)
+            .Include(task => task.Comments)
+            .Include(task => task.Owner)
+            .Include(task => task.TaskFor)
+            .FirstOrDefaultAsync(t => t.TasksId == id);
 
             if (tasks == null)
             {
