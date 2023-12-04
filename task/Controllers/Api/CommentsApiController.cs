@@ -8,12 +8,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using task.Data;
+using task.Filters;
 using task.Models;
 
 namespace task.Controllers_Api
 {
     [Route("api/Comments")]
     [ApiController]
+    [ApiKeyAuthAttr]
     public class CommentsApiController : ControllerBase
     {
         private readonly TaskContext _context;

@@ -9,11 +9,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using task.Data;
 using task.Models;
+using task.Filters;
 
 namespace task.Controllers_Api
 {
     [Route("api/Tasks")]
     [ApiController]
+    [ApiKeyAuthAttr]    
     public class TasksApiController : ControllerBase
     {
         private readonly TaskContext _context;
@@ -25,6 +27,7 @@ namespace task.Controllers_Api
 
         // GET: api/TasksApi
         [HttpGet]
+        
         public async Task<ActionResult<IEnumerable<Tasks>>> GetTasks()
         {
             var tasks = await _context.Tasks
