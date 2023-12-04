@@ -25,14 +25,20 @@ namespace task.Controllers_Api
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Comment>>> GetComments()
         {
-            return await _context.Comments.ToListAsync();
+            return await _context.Comments
+            .Include(c => c.Owner)
+            .Include(c => c.Tasks)
+            .ToListAsync();
         }
 
         // GET: api/CommentsApi/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Comment>> GetComment(int id)
         {
-            var comment = await _context.Comments.FindAsync(id);
+            var comment = await _context.Comments
+            .Include(c => c.Owner)
+            .Include(c => c.Tasks)
+            .FirstOrDefaultAsync(c => c.CommentId == id);
 
             if (comment == null)
             {
